@@ -4,6 +4,7 @@ import sys
 import os.path
 import argparse
 import datetime
+import shutil
 
 
 def observed_tweets(data_file_name):
@@ -40,6 +41,10 @@ def main(args):
         else:
             # path exists, but it's not a directory
             raise ValueError('ERROR - data path (' + str(args.data_path) + ')already exists, but it is not a directory.')
+
+    # create backup of old file
+    backup_file_name = data_file_name + '.bak'
+    shutil.copy(data_file_name, backup_file_name)
 
     # get the latest tweets and add them to the data file
     # some tweets may be duplicates for ones recorded earlier, however, some data such as retweet count may be updated
