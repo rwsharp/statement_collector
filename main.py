@@ -70,7 +70,7 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--config-file", default="config.json",     help="config file name")
+    parser.add_argument("--config-file", default="config/config.json",     help="config file name")
     parser.add_argument("--data-path",   default="data",            help="path to data file")
     parser.add_argument("--data-file",   default="trump_dump.json", help="data file name")
     parser.add_argument("--query",       default="from:realDonaldTrump", help="data file name")
