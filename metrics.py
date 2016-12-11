@@ -65,7 +65,8 @@ def main(args):
     metrics = {
         'words': list(),
         'unfair': list(),
-        'times': list()
+        'times': list(),
+        'source': list()
     }
 
     with open(data_file_name, 'r') as data_file:
@@ -90,6 +91,12 @@ def main(args):
             else:
                 tweet_data[status['id']][target_field] = status[source_field]
 
+            target_field, source_field = 'source', 'source'
+            if target_field in tweet_data[status['id']]:
+                assert tweet_data[status['id']][target_field] == status[source_field]
+            else:
+                tweet_data[status['id']][target_field] = status[source_field]
+
             # dynamic fields
             target_field, source_field = 'rt', 'retweet_count'
             tweet_data[status['id']].setdefault(target_field, dict())
@@ -100,6 +107,11 @@ def main(args):
         metrics['words'].extend(norm_words)
         metrics['unfair'].append(is_negative(norm_words))
         metrics['times'].append(tweet['created at'])
+        metrics['source'].append(tweet['source'])
+
+        if tweet['source'] == '<a href="https://ads.twitter.com" rel="nofollow">Twitter Ads</a>':
+            print '>>>>>>>', tweet['created at'], tweet['text']
+
 
     n_words = 25
     print 'Top ' + str(n_words) + ' most used words (excludes some common words like "the").'
@@ -133,6 +145,14 @@ def main(args):
     n_unfair = sum(metrics['unfair'])
     n_tweets = len(metrics['unfair'])
     print n_unfair, n_tweets, str(100 * round(n_unfair/float(n_tweets), 1)) + '%'
+
+    print
+
+    total = 0
+    for source, count in Counter(metrics['source']).most_common():
+        total += count
+        print source, count
+    print 'total tweets:', total
 
 
 if __name__ == '__main__':
