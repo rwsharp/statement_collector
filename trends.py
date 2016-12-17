@@ -6,6 +6,7 @@ import argparse
 import datetime
 from collections import Counter
 import re
+from dateutil import tz
 
 def is_negative(normalized_word_list):
     world_is_unfair_words = set(['biased', 'fools', 'dishonest', 'inacurate', 'overrated', 'crooked', 'onesided',
@@ -106,6 +107,9 @@ def main(args):
         trends['source'][tweet_time] = tweet['source']
 
     # track by time of day
+    utc_tz = tz.gettz('UTC')
+    est_tz = tz.gettz('America/New_York')
+
     day_parts = {'you should really get some sleep': (datetime.time(0, 0, 0), datetime.time(4, 0, 0)),
                  'early morning': (datetime.time(4, 0, 1), datetime.time(8, 0, 0)),
                  'morning': (datetime.time(8, 0, 1), datetime.time(12, 0, 0)),
@@ -122,7 +126,10 @@ def main(args):
     print ','.join(header)
     for tweet_time, created_at in sorted(trends['times'].iteritems()):
         for day_part, (start, end) in day_parts.iteritems():
-            if start <= datetime.datetime.strptime(created_at, '%a %b %d %H:%M:%S +0000 %Y').time() <= end:
+            utc_tweet_time = datetime.datetime.strptime(created_at, '%a %b %d %H:%M:%S +0000 %Y')
+            utc_tweet_time = utc_tweet_time.replace(tzinfo=utc_tz)
+            est_tweet_time = utc_tweet_time.astimezone(est_tz)
+            if start <= est_tweet_time.time() <= end:
                 tweet_day_parts.append(day_part)
                 break
 
