@@ -43,7 +43,7 @@ def main(args):
             tweet_data[collected_at][tweet['id']] = tweet
 
     for collected_at, tweets in sorted(tweet_data.iteritems()):
-        output_file_name = 'data/chunked/tweets_by_realDonalTrump_' + collected_at + '.json'
+        output_file_name = os.path.join(args.data_path, 'chunked/tweets_by_realDonalTrump_' + collected_at + '.json')
         with open(output_file_name, 'w') as output_file:
             print output_file_name
             for tweet_id, tweet in sorted(tweets.iteritems()):
