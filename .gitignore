@@ -2,3 +2,4 @@ config/
 data/
 notes.txt
 *.log
+*.csv
