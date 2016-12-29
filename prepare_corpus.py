@@ -37,10 +37,17 @@ def main(args):
             formatted_tweet_data.setdefault(name, list())
 
             tweet_date = datetime.datetime.strptime(tweet['created_at'], '%a %b %d %H:%M:%S +0000 %Y').strftime('%Y%m%d')
-            tweet_text = repr(tweet['text']).strip('u').strip('"')
-            tweet_text = re.sub('\\\U', ' \\\U', tweet_text)
-            tweet_text = re.sub('\s', ' ', tweet_text)
+            tweet_text = repr(tweet['text']).strip('u').strip('"').strip("'")
+            tweet_text = re.sub('\\\U', ' \\\U', tweet_text)        # space separate unicode (separates emojis)
+            tweet_text = re.sub('\\\\n', ' ', tweet_text)           # separate words that break on newline
+            tweet_text = re.sub('[\,\.\!\?\'\"]', '', tweet_text)                # strip common punctuation, but preserve @ and #
+            tweet_text = re.sub('\s', ' ', tweet_text)              # reduce whitespace to space to avoid clash with tabs in .tsv output
+            tweet_text = tweet_text.lower()
             print_data = [tweet_date, tweet_text]
+
+            # A test case with emojis
+            #if name == 'MarkWarner':
+            #    print (delimiter.join(print_data)).encode(encoding='UTF-8')
 
             formatted_tweet_data[name].append(print_data)
 
@@ -54,8 +61,7 @@ def main(args):
         file_name = os.path.join(args.output_path, name + '.tsv')
         with open(file_name, 'w') as output_file:
             for tweet_data in sorted(tweets):
-                print >> output_file, delimiter.join(tweet_data)
-
+                print >> output_file, (delimiter.join(tweet_data)).encode(encoding='UTF-8')
 
 
 if __name__ == '__main__':
