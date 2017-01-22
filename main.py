@@ -35,12 +35,12 @@ def get_args():
     """
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--config-file", default="config/pu_config.json", help="config file name")
-    parser.add_argument("--data-path", default="data", help="path to data file")
-    parser.add_argument("--data-file", default="trump_dump.json", help="data file name")
-    parser.add_argument("--backup-suffix", default=".bak",
-                        help="suffix appended to data file name to create backup data file")
-    parser.add_argument("--query", default="from:realDonaldTrump", help="data file name")
+    parser.add_argument("--config-file",   default="config/pu_config.json", help="Twitter account config file name")
+    parser.add_argument("--data-path",     default="data",                  help="path to data file")
+    parser.add_argument("--data-file",     default="trump_dump.json",       help="data file name")
+    parser.add_argument("--backup-suffix", default=".bak",                  help="suffix appended to data file name to create backup data file")
+    parser.add_argument("--query",         default="from:realDonaldTrump",  help="query to submit to tweepy api.search")
+    parser.add_argument("--since-id",      default=None,                    help="only collect tweets more recent than this ID (stictly greater than)")
 
     args = parser.parse_args()
 
@@ -83,10 +83,14 @@ def main(args):
     api = tweepy.API(auth)
     max_tweets = 1000
     query = args.query
+    since_id = args.since_id
 
     try:
         logging.info('executing query')
-        search_result = [status for status in tweepy.Cursor(api.search, q=query).items(max_tweets)]
+        if since_id is None:
+            search_result = [status for status in tweepy.Cursor(api.search, q=query).items(max_tweets)]
+        else:
+            search_result = [status for status in tweepy.Cursor(api.search, q=query, since_id=since_id).items(max_tweets)]
     except:
         logging.error('ERROR - something went wrong with the query.')
         raise
