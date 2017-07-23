@@ -1,6 +1,25 @@
 #!/bin/bash
 set -x
 
+OTHER_MEMBERS=("@RepTomMarino"
+               "@RandyNeugebauer"
+               "@Rep_LizCheney"
+               "@Rep_DevinNunes"
+               "@AlanGrayson"
+               "@congbillposey"
+               "@SenateBanking"
+               "@RepLaMalfa"
+               "@RobWittman"
+               "@RepGuthrie"
+               "@KellyAyotte"
+               "@PatrickMurphyFL"
+               "@aguilarpete"
+               "@CongHuelskamp"
+               "@johnculberson"
+               "@leezeldin"
+               "@JohnCarneyDE"
+               "@KamalaHarris")
+
 DATE=`date +%Y%m%d`
 
 BASE_PATH=/home/ubuntu
@@ -26,7 +45,6 @@ COMMAND="${PYTHON_EXE} ${SCRIPT_PATH}/prepare_corpus.py --data-path ${DATA_PATH}
 #echo ${COMMAND}
 eval ${COMMAND}
 
-OTHER_MEMBERS=("CongHuelskamp" "johnculberson" "leezeldin" "JohnCarneyDE" "KamalaHarris")
 DATA_FILE="other_member_accounts.full_tweets.json"
 RESHAPED_DATA_FILE="other_member_accounts.json"
 
