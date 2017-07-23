@@ -31,11 +31,19 @@ def main(args):
         with open(input_file_name, 'r') as input_file:
             for line in input_file:
                 data = json.loads(line)
-                output_data = {'created_at': data['created_at'],
-                               'id': data['id'],
-                               'retweeted': data['retweeted'],
-                               'text': data['text'],
-                               'user': {'screen_name': data['user']['screen_name']}}
+                try:
+                    output_data = {'created_at': data['created_at'],
+                                   'id': data['id'],
+                                   'retweeted': data['retweeted'],
+                                   'text': data['text'],
+                                   'user': {'screen_name': data['user']['screen_name']}}
+                except:
+                    print '----'
+                    print line.strip()
+                    print '----'
+                    print data
+                    print '----'
+                    raise
                 print >> output_file, json.dumps(output_data)
 
 
