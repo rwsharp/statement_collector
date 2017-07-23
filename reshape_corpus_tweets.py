@@ -32,11 +32,11 @@ def main(args):
             for line in input_file:
                 data = json.loads(line)
                 try:
-                    output_data = {'created_at': data['created_at'],
-                                   'id': data['id'],
-                                   'retweeted': data['retweeted'],
-                                   'text': data['text'],
-                                   'user': {'screen_name': data['user']['screen_name']}}
+                    output_data = {'created_at': data['status']['created_at'],
+                                   'id': data['status']['id'],
+                                   'retweeted': data['status']['retweeted'],
+                                   'text': data['status']['text'],
+                                   'user': {'screen_name': data['status']['user']['screen_name']}}
                 except:
                     print '----'
                     print line.strip()
