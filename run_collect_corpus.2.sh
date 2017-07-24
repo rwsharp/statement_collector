@@ -48,10 +48,18 @@ eval ${COMMAND}
 DATA_FILE="other_member_accounts.full_tweets.json"
 RESHAPED_DATA_FILE="other_member_accounts.json"
 
+# get the max tweet id from the already collected tweets - this helps us avoid duplication in the next tweet pull
+if [ -e "${DATA_PATH}/${RESHAPED_DATA_FILE}" ]
+then
+    MAX_TWEET=`cat ${DATA_PATH}/${RESHAPED_DATA_FILE} | jq '.id' | sort -r | head -n 1`
+else
+    MAX_TWEET=0
+fi
+
 for MEMBER in ${OTHER_MEMBERS[*]}
 do
     QUERY="from:${MEMBER}"
-    COMMAND="${PYTHON_EXE} ${SCRIPT_PATH}/main.py --data-path ${DATA_PATH} --data-file ${DATA_FILE} --query \"${QUERY}\""
+    COMMAND="${PYTHON_EXE} ${SCRIPT_PATH}/main.py --data-path ${DATA_PATH} --data-file ${DATA_FILE} --query \"${QUERY}\" --since-id ${MAX_TWEET}"
     #echo ${COMMAND}
     eval ${COMMAND}
     COMMAND="cp ${DATA_PATH}/${DATA_FILE} ${BACKUP_PATH}/${DATA_FILE}"
